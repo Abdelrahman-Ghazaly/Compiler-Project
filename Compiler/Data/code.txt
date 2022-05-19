@@ -1,0 +1,13 @@
+using System;
+
+namespace Simple
+{
+   class Program 
+   {
+      static void main (string[] args)
+      {
+           intasd=15;
+           console.WriteLine("this is d7k");
+       }
+    }
+}
