@@ -12,26 +12,11 @@ namespace Compiler
 	public class Lexer
 	{
 		private const string Digits = "0123456789.";
-		private const string Chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_";
-		//private readonly string[] Keywords = { "Pattern", "DerivedFrom", "TrueFor", "Else", "Ity", "Sity",
-		//	"Cwq", "CwqSequence","Ifity","Sifity","Valueless","Logical", "BreakFromThis","Whatever", "Respondwith", "Srap", "Scan", "Conditionof","Require" };
-		
+		private const string Chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_";		
 		private readonly string[] Keywords = { "Type", "Infer", "If", "Else", "Ipok", "Sipok", "Craf", "Sequence", "Ipokf", "Sipokf", "Valueless", "Rational", "Endthis", "However", "When", "Respondwith", "Srap", "Scan", "Conditionof", "Require"};
-
 		private readonly string[] ReturnTokens = { "Class", "Inheritance", "Condition", "Condition", "Integer", "SInteger", "Character", "String", "Float", "SFloat", "Void", "Boolean", "Break", "Loop", "Loop", "Return", "Struct", "Switch", "Switch", "Inclusion"};
-
 		private readonly string[] Symbols = { "@", "^", "$", "#", "+", "-", "/", "*", "&&", "||", "~", "==", "<", ">", "!=", "<=", ">=", "=", "->", "{}[]", "“", "’", "***", "</","/>" };  
 		private readonly string[] ReturnTokensForSymbols = { "Stat Symbol", "Stat Symbol", "End Symbol", "End Symbol", "Arithmetic Operation", "Arithmetic Operation", "Arithmetic Operation", "Arithmetic Operation", "Logic operators", "Logic operators", "Logic operators", "relational operators", "relational operators", "relational operators", "relational operators", "relational operators", "relational operators", "Assignment operator", "Access Operator", "Braces", "Quotation Mark", "Quotation Mark","Comment","Comment","Comment" };
-
-		//private readonly string[] ReturnTokens = { "Class", "Inheritance", "Condition", "Condition", "Integer", "SInteger",
-		//	"Character","String","float","SFloat","Void","Boolean","Break","Loop","Return","Struct","Switch","Switch","Inclusion"};
-		//private readonly string[] Symbols = { "@", "$", "\"'", "{}[]()", "^", "&&", "||", "~", "=", "->", "==", "<>", "!=", "<=", ">=", "--", "/-", "-/", "+-*/" };
-		//private readonly string[] ReturnTokensForSymbols = { "Start Symbol","End Symbol", "Quotation Mark", "Braces",
-		//	"Line Delimiter", "Logic Operator", "Logic Operator", "Logic Operator",
-		//	"Assignment Operator", "Access Operator","Relational Operators","Relational Operators","Relational Operators",
-		//	"Relational Operators","Relational Operators","Comment","Comment","Comment","Arithmetic Operator"};
-
-
 		private const char WordDelimiter = ' ';
 		private const char LineDelimiter = ';';
 		private string _text;
