@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,13 +12,20 @@ namespace Compiler
 	public class Lexer
 	{
 		private const string Digits = "0123456789.";
-		private const string Chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_";		
+		private const string Chars = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_";
+
+		
 		private readonly string[] Keywords = { "Type", "Infer", "If", "Else", "Ipok", "Sipok", "Craf", "Sequence", "Ipokf", "Sipokf", "Valueless", "Rational", "Endthis", "However", "When", "Respondwith", "Srap", "Scan", "Conditionof", "Require"};
+
 		private readonly string[] ReturnTokens = { "Class", "Inheritance", "Condition", "Condition", "Integer", "SInteger", "Character", "String", "Float", "SFloat", "Void", "Boolean", "Break", "Loop", "Loop", "Return", "Struct", "Switch", "Switch", "Inclusion"};
+
 		private readonly string[] Symbols = { "@", "^", "$", "#", "+", "-", "/", "*", "&&", "||", "~", "==", "<", ">", "!=", "<=", ">=", "=", "->", "{}[]", "“", "’", "***", "</","/>" };  
 		private readonly string[] ReturnTokensForSymbols = { "Start Symbol", "Start Symbol", "End Symbol", "End Symbol", "Arithmetic Operation", "Arithmetic Operation", "Arithmetic Operation", "Arithmetic Operation", "Logic operators", "Logic operators", "Logic operators", "relational operators", "relational operators", "relational operators", "relational operators", "relational operators", "relational operators", "Assignment operator", "Access Operator", "Braces", "Quotation Mark", "Quotation Mark","Comment","Comment","Comment" };
+
+
 		private const char WordDelimiter = ' ';
 		private const char LineDelimiter = ';';
+		private const char EndLine = '\n';
 		private string _text;
 		private int _postion;
 		private int _lineNo;
@@ -104,19 +111,15 @@ namespace Compiler
 		{
 			foreach (char char_ in Chars)
 			{
-				try
-				{
 					if (word[0] == char_)
 						return true;
-				}
-				catch { }
 			}
 			return false;
 		}
 		//checks is the current char is whitespace
 		private bool IsLineDelimiter()
 		{
-			if (Current == LineDelimiter)
+			if (Current == LineDelimiter || Current == EndLine)
 					return true;
 			return false;
 		}
@@ -138,15 +141,6 @@ namespace Compiler
 			}
 			return false;
 		}
-		/*
-		private bool IsTokenDelimiter()
-		{
-			if (Current == TokenDelimiter)
-				return true;
-			return false;
-		}*/
-
-		//returns substring from the original string from start to end-1 (end not included)
 		private string SubString(int start, int end)
 		{
 			string subString = "";
@@ -191,54 +185,29 @@ namespace Compiler
 					string word = SubString(start, _postion);               //store the whole number
 					if (IsKeyword(word) != "NOT FOUND")
 					{
-						//System.Diagnostics.Debug.WriteLine(word + " " + _lineNo + " " + _lexemeNo + IsKeyword(word));
 						addLexeme(_lineNo, word, IsKeyword(word), _lexemeNo, "matched");
 						if (IsKeyword(word) == "Inclusion")
 						{
-							while (IsLineDelimiter())
+							while (Current != '\"' )
 								Next();
 
-							if (Current == '"')
-							{
-								Next();
-							}
-
+							Next();
 
 							start = _postion;
-							while ((IsCharacter() || IsDigit() || IsLineDelimiter()) && (Current != '"' && !IsEndOfFile()))                           //while the new charcter is still digit
+							while ((IsCharacter() || IsDigit() || IsLineDelimiter()) && (Current != '\"' && !IsEndOfFile()))                           //while the new charcter is still digit
 								Next();
 							string fileName = SubString(start, _postion);
+							addLexeme(_lineNo, fileName, "File Path", _lexemeNo, "matched");
 							Next();
-							if (File.Exists(fileName))
-							{
-								int pos = _postion;
-								string txt = _text;
-								int lineNo = _lineNo;
-								int lexemeNo = _lexemeNo;
-								StreamReader sr = new StreamReader(fileName);
-								string code = sr.ReadToEnd();
-								sr.Close();
-								Tokinize(code, dic);
-								_postion = pos;
-								_text = txt;
-								_lineNo = lineNo;
-								_lexemeNo = lexemeNo;
-							}
+							
 						}
 					}
 					else if (IsIdentifier(word))
 						addLexeme(_lineNo, word, "Identifier", _lexemeNo, "matched");
-					//System.Diagnostics.Debug.WriteLine(word + " " + _lineNo + " " + _lexemeNo + " Identifier");
 				}
-				else if (IsWordDelimiter())
+				else if (IsWordDelimiter()) 
 				{
-					if (IsWordDelimiter())
-					{
-						
-						//IncreaseLexemeNo();
-						//addLexeme(_lineNo, Current + "", "Token Delimiter", _lexemeNo, "matched");
-						//System.Diagnostics.Debug.WriteLine(Current + " " + _lineNo + " " + _lexemeNo + " Token Delimiter");
-					}
+					
 					Next();
 					start = _postion;
 					while (IsCharacter() || IsDigit())
@@ -251,8 +220,7 @@ namespace Compiler
 						addLexeme(_lineNo, word, "Error", _lexemeNo, "not matched");
 						totalErrorNumber++;
 					} 
-
-					//System.Diagnostics.Debug.WriteLine(word + " " + _lineNo + " " + _lexemeNo + " Error");
+					
 				}
 
 				else if (IsDigit())                             //check if current is digit
@@ -261,16 +229,15 @@ namespace Compiler
 					while (IsDigit() && !IsEndOfFile())                           //while the new charcter is still digit
 						Next();
 					string Digit = SubString(start, _postion);  //store the whole number
-					IncreaseLexemeNo();
-					//System.Diagnostics.Debug.WriteLine(Digit + " " + _lineNo + " " + _lexemeNo + " Constant");
+					IncreaseLexemeNo();					
 					addLexeme(_lineNo, Digit, "Constant", _lexemeNo, "matched");
 				}
 
-				else if (IsLineDelimiter())                                 //check if current is whitespace
+				else if (IsLineDelimiter() )                                 //check if current is whitespace
 				{
 					while (IsLineDelimiter() && !IsEndOfFile())
 					{
-						if (Current == ';')
+						if (Current == ';' || Current == '\n' )
 						{
 							IncreaseLineNo();
 							ResetLexemeNo();
@@ -292,23 +259,9 @@ namespace Compiler
 					other = SubString(start, _postion);
 					if (IsSymbol(other) != "NOT FOUND")
 					{
-						IncreaseLexemeNo();
-						//System.Diagnostics.Debug.WriteLine(other + " " + _lineNo + " " + _lexemeNo + IsSymbol(other));
-						addLexeme(_lineNo, other, IsSymbol(other), _lexemeNo, "matched");
-						if (IsSymbol(other) == "Comment")
-						{
-							if (other == "***")
-							{
-								while (Current != '\n' && !IsEndOfFile())
-									Next();
-							}
-							else if (other == "</")
-							{
-								while (Current != '>' && !IsEndOfFile())
-									Next();
-							}
-						}
-						else if (IsSymbol(other) == "Quotation Mark")
+						IncreaseLexemeNo();						
+						addLexeme(_lineNo, other, IsSymbol(other), _lexemeNo, "matched");						
+						 if (IsSymbol(other) == "Quotation Mark")
 						{
 							if (other == "'")
 							{
@@ -343,7 +296,7 @@ namespace Compiler
 				}                                   //if the input is not all the above just increase postion to avoid infinite loop
 				else Next();
 			}
-			Debug.WriteLine("Total Number of Error is: " + totalErrorNumber);
+			
 			return;
 		}
 	}
