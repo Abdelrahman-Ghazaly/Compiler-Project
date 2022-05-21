@@ -47,11 +47,6 @@ namespace Compiler
 				return _text[_postion];
 			}
 		}
-		//method to set text that we'll analyze
-		/*public void SetText(string text)
-		{
-			_text = text;
-		}*/
 		//increase postion that our current char points to
 		private void Next() { _postion++; }
 		//increase line number
