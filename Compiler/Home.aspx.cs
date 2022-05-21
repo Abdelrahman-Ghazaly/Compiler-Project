@@ -195,6 +195,7 @@ namespace Compiler
         {            
             string code = Request.Form["CodeArea"];
             compile(code);
+            code = deletingComments(code);
             scannerOutPut();
         }
     }
