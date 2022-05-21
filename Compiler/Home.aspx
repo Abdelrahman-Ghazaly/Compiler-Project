@@ -51,14 +51,15 @@
             font-size:15px;
             line-height: 1.5;
         }
-        textarea {
+        .textarea {
             background: url(http://i.imgur.com/2cOaJ.png);
             background-attachment: local;
             background-repeat: no-repeat;
             padding-left: 35px;
-            padding-top: 10px;
+            padding-top: 12px;
             border-color: #ccc;
             font-size: 14px;
+            line-height: 1.1;
             resize:vertical;
         }
         h2{
@@ -89,7 +90,6 @@
             </div>
         </div>
     <p>
-        <asp:Label ID="labelTest" runat="server" Text="Test"></asp:Label>
         </p>
         <div class="outPut">
             <div>
