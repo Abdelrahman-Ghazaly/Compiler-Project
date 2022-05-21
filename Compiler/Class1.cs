@@ -15,7 +15,6 @@ namespace Compiler
         static int counter3 = 0;
         static int counter4 = 0;
         static int counter5 = 0;
-        EnvironmentVariableTarget i;
         // Instance Variables
         static string[] lineNo = new string[1000];
         static string[] lexeme = new string[1000];
